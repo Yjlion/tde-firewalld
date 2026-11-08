@@ -1,0 +1,17 @@
+[Desktop Entry]
+Encoding=UTF-8
+Exec=tdecmshell firewalld
+Icon=tde-firewalld
+Type=Application
+
+X-TDE-ModuleType=Library
+X-TDE-Library=firewalld
+X-TDE-RootOnly=false
+X-TDE-ParentApp=kcontrol
+X-DocPath=tde-firewalld/index.html
+
+Name=Firewall
+Comment=Configure the firewalld firewall
+Keywords=firewall;firewalld;zone;port;service;security;network;nftables;iptables;
+
+Categories=Qt;TDE;X-TDE-settings-security;
