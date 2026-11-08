@@ -1,0 +1,18 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Exec=tde-firewalld-tray
+Icon=tde-firewalld
+OnlyShowIn=TDE;
+X-TDE-autostart-after=panel
+X-TDE-StartupNotify=false
+X-TDE-UniqueApplet=true
+# Not started by default: enable "Start Automatically at Login" in the tray
+# icon's menu, which sets [General] Autostart=true in tde-firewalld-trayrc.
+X-TDE-autostart-condition=tde-firewalld-trayrc:General:Autostart:false
+
+Name=Firewall Tray
+GenericName=Firewall Status
+Comment=Show the firewall state in the system tray
+
+Categories=System;Applet;

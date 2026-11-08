@@ -1,0 +1,16 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Exec=tde-firewalld-tray
+Icon=tde-firewalld
+X-DocPath=tde-firewalld/tray.html
+Terminal=false
+X-TDE-StartupNotify=false
+X-TDE-UniqueApplet=true
+
+Name=Firewall Tray
+GenericName=Firewall Status
+Comment=Show the firewall state in the system tray
+Keywords=firewall;firewalld;tray;systray;panic;zone;
+
+Categories=Qt;TDE;System;Security;

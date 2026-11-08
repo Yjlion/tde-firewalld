@@ -1,0 +1,41 @@
+Source: tde-firewalld
+Section: tde
+Priority: optional
+Maintainer: Yjlion <yjlion@gmail.com>
+Build-Depends: debhelper-compat (= 13),
+               cmake,
+               tde-cmake,
+               tdelibs14-trinity-dev,
+               libtqt3-mt-dev,
+               libtqtinterface-dev,
+               libdbus-1-tqt-dev,
+               libdbus-1-dev,
+               pkgconf | pkg-config
+Standards-Version: 4.6.2
+Homepage: https://github.com/Yjlion/tde-firewalld
+Vcs-Browser: https://github.com/Yjlion/tde-firewalld
+Vcs-Git: https://github.com/Yjlion/tde-firewalld.git
+Rules-Requires-Root: no
+
+Package: tde-firewalld-trinity
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         firewalld,
+         polkit-agent-tde | polkit-1-auth-agent
+Recommends: kcontrol-trinity,
+            khelpcenter-trinity
+Description: firewalld manager for the Trinity Desktop Environment [Trinity]
+ tde-firewalld is a graphical front end for firewalld, the dynamic firewall
+ daemon. It is available both as a Trinity Control Center module
+ (Security & Privacy > Firewall) and as a standalone application, with an
+ optional system tray icon for the Kicker panel that is not started at login
+ unless the user enables it.
+ .
+ It shows the firewall state and active zones, and lets you change the
+ default zone, allow services and ports, configure masquerading, port
+ forwarding and rich rules, and bind interfaces and sources to zones, in
+ either the runtime or the permanent configuration.
+ .
+ It communicates with firewalld over D-Bus; privileged operations are
+ authorized by polkit through polkit-agent-tde.

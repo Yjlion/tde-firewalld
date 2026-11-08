@@ -1,0 +1,689 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN" "dtd/kdex.dtd" [
+  <!ENTITY tdefirewalld "<application>TDE Firewall Manager</application>">
+  <!ENTITY kappname "&tdefirewalld;">
+  <!ENTITY package "tde-firewalld">
+  <!ENTITY firewalld "<application>firewalld</application>">
+  <!ENTITY polkit "<application>polkit</application>">
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % English "INCLUDE">
+]>
+
+<book lang="&language;">
+
+<bookinfo>
+<title>The &tdefirewalld; Handbook</title>
+
+<authorgroup>
+<author>
+<othername>tde-firewalld developers</othername>
+</author>
+</authorgroup>
+
+<copyright>
+<year>2026</year>
+<holder>tde-firewalld developers</holder>
+</copyright>
+
+<legalnotice>&FDLNotice;</legalnotice>
+
+<date>2026-11-08</date>
+<releaseinfo>0.1.0</releaseinfo>
+
+<abstract>
+<para>
+&tdefirewalld; is a graphical front end for the &firewalld; firewall daemon.
+It is available as a Trinity Control Center module and as a standalone
+application.
+</para>
+</abstract>
+
+<keywordset>
+<keyword>TDE</keyword>
+<keyword>Trinity</keyword>
+<keyword>firewall</keyword>
+<keyword>firewalld</keyword>
+<keyword>zone</keyword>
+<keyword>polkit</keyword>
+<keyword>kcontrol</keyword>
+</keywordset>
+</bookinfo>
+
+<!-- ================================================================== -->
+
+<chapter id="introduction">
+<title>Introduction</title>
+
+<para>
+&tdefirewalld; lets you view and change the configuration of
+&firewalld;, the dynamic firewall daemon used by Debian and many other
+Linux distributions. It talks to &firewalld; directly over the D-Bus
+system bus, the same interface that <command>firewall-cmd</command> and
+<command>firewall-config</command> use.
+</para>
+
+<para>
+With &tdefirewalld; you can:
+</para>
+
+<itemizedlist>
+<listitem><para>see whether the firewall is running and which zones are active;</para></listitem>
+<listitem><para>change the default zone, enable panic mode and logging of denied packets;</para></listitem>
+<listitem><para>allow services and open ports in a zone;</para></listitem>
+<listitem><para>set up masquerading (NAT) and port forwarding;</para></listitem>
+<listitem><para>add and remove rich rules;</para></listitem>
+<listitem><para>bind network interfaces and source addresses to zones;</para></listitem>
+<listitem><para>keep an eye on the firewall with an optional system tray icon;</para></listitem>
+<listitem><para>browse the definitions of all known services;</para></listitem>
+<listitem><para>edit either the <emphasis>runtime</emphasis> or the <emphasis>permanent</emphasis> configuration.</para></listitem>
+</itemizedlist>
+
+<screenshot>
+<screeninfo>The &tdefirewalld; status page</screeninfo>
+<mediaobject>
+<imageobject><imagedata fileref="status.png" format="PNG"/></imageobject>
+<textobject><phrase>The &tdefirewalld; status page</phrase></textobject>
+</mediaobject>
+</screenshot>
+
+</chapter>
+
+<!-- ================================================================== -->
+
+<chapter id="getting-started">
+<title>Getting Started</title>
+
+<sect1 id="requirements">
+<title>Requirements</title>
+
+<itemizedlist>
+<listitem><para>The <application>Trinity Desktop Environment</application> R14.1 or later.</para></listitem>
+<listitem><para>&firewalld; 1.0 or later, installed and running
+(<command>systemctl enable --now firewalld</command>).</para></listitem>
+<listitem><para>A &polkit; authentication agent, normally
+<application>polkit-agent-tde</application>, which is started automatically with
+your TDE session.</para></listitem>
+</itemizedlist>
+</sect1>
+
+<sect1 id="starting">
+<title>Starting &tdefirewalld;</title>
+
+<para>
+There are two ways to use &tdefirewalld;:
+</para>
+
+<variablelist>
+<varlistentry>
+<term>In the Trinity Control Center</term>
+<listitem>
+<para>
+Open the <application>Trinity Control Center</application> and select
+<menuchoice><guimenu>Security &amp; Privacy</guimenu><guimenuitem>Firewall</guimenuitem></menuchoice>.
+The module can also be opened on its own with
+<userinput><command>tdecmshell</command> <option>firewalld</option></userinput>.
+</para>
+<screenshot>
+<screeninfo>The firewall module in the Trinity Control Center</screeninfo>
+<mediaobject>
+<imageobject><imagedata fileref="kcontrol.png" format="PNG"/></imageobject>
+<textobject><phrase>The firewall module in the Trinity Control Center</phrase></textobject>
+</mediaobject>
+</screenshot>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>As a standalone application</term>
+<listitem>
+<para>
+Choose <guimenuitem>Firewall Manager</guimenuitem> in the
+<guimenu>System</guimenu> section of the TDE menu, or run
+<userinput><command>tde-firewalld</command></userinput>. See
+<xref linkend="commands"/> for the command line options.
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+
+<para>
+Both offer exactly the same functionality. Changes are sent to &firewalld;
+immediately; there is no <guibutton>Apply</guibutton> button.
+</para>
+</sect1>
+
+<sect1 id="runtime-permanent">
+<title>Runtime and Permanent Configuration</title>
+
+<para>
+&firewalld; keeps two sets of configuration, and the
+<guilabel>Configuration</guilabel> selector at the top of the window
+chooses which one you see and edit:
+</para>
+
+<variablelist>
+<varlistentry>
+<term><guilabel>Runtime</guilabel></term>
+<listitem><para>
+The configuration that is active right now. Changes take effect
+immediately but are lost when &firewalld; is reloaded or the computer
+is restarted. Use it to try out changes.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><guilabel>Permanent</guilabel></term>
+<listitem><para>
+The configuration that is saved to disk (in
+<filename>/etc/firewalld</filename>). Changes are not active until the
+firewall is reloaded with <guibutton>Reload Firewall</guibutton>.
+</para></listitem>
+</varlistentry>
+</variablelist>
+
+<para>
+Two buttons act on both configurations:
+</para>
+
+<variablelist>
+<varlistentry>
+<term><guibutton>Reload Firewall</guibutton></term>
+<listitem><para>
+Loads the permanent configuration and makes it the runtime
+configuration. Runtime-only changes are lost.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><guibutton>Runtime to Permanent</guibutton></term>
+<listitem><para>
+Saves the current runtime configuration as the permanent
+configuration. Use it after you have tested your changes.
+</para></listitem>
+</varlistentry>
+</variablelist>
+
+<screenshot>
+<screeninfo>Editing the permanent configuration</screeninfo>
+<mediaobject>
+<imageobject><imagedata fileref="zones-permanent.png" format="PNG"/></imageobject>
+<textobject><phrase>Editing the permanent configuration</phrase></textobject>
+</mediaobject>
+</screenshot>
+</sect1>
+
+<sect1 id="authentication">
+<title>Authentication</title>
+
+<para>
+Changing the firewall is a privileged operation. &tdefirewalld; itself
+runs as your normal user and never runs as root. Instead, &firewalld;
+asks &polkit; whether you are allowed to do what you requested. When
+authentication is required, the &polkit; agent
+(<application>polkit-agent-tde</application>) shows a dialog asking for
+an administrator password.
+</para>
+
+<para>
+The default &polkit; policies decide when you are asked. On Debian, the
+<quote>server</quote> policy is installed by default: you need to
+authenticate to read the zone details and again to change the
+configuration. After a successful authentication &polkit; remembers it
+for a few minutes.
+</para>
+
+<para>
+If you cancel the password dialog, &tdefirewalld; shows a banner
+<guilabel>Authentication is required to view the firewall
+configuration</guilabel> and stops asking. Click
+<guibutton>Authenticate...</guibutton> to try again.
+</para>
+
+<screenshot>
+<screeninfo>Authentication was cancelled</screeninfo>
+<mediaobject>
+<imageobject><imagedata fileref="auth-required.png" format="PNG"/></imageobject>
+<textobject><phrase>Authentication was cancelled</phrase></textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+If no &polkit; agent is running at all, a warning is shown at the top of
+the window. Start <command>polkit-agent-tde</command> or log in to TDE
+again.
+</para>
+
+<note><para>
+Administrators can change the policy with &polkit; rules. For example,
+to let members of the <systemitem class="groupname">netadmin</systemitem>
+group change the firewall without a password, create
+<filename>/etc/polkit-1/rules.d/50-firewalld.rules</filename>:
+</para>
+<programlisting>
+polkit.addRule(function(action, subject) {
+    if (action.id.indexOf("org.fedoraproject.FirewallD1.") == 0 &amp;&amp;
+        subject.isInGroup("netadmin") &amp;&amp; subject.active) {
+        return polkit.Result.YES;
+    }
+});
+</programlisting>
+</note>
+</sect1>
+</chapter>
+
+<!-- ================================================================== -->
+
+<chapter id="using">
+<title>Using &tdefirewalld;</title>
+
+<sect1 id="status-page">
+<title>The Status Page</title>
+
+<para>
+The <guilabel>Status</guilabel> page shows whether &firewalld; is running and
+which version is installed. If &firewalld; is not running, a banner is shown
+with a <guibutton>Start firewalld</guibutton> button, which asks systemd to start
+the service (this also requires authentication).
+</para>
+
+<variablelist>
+<varlistentry>
+<term><guilabel>Default zone</guilabel></term>
+<listitem><para>
+The zone used for all network connections and interfaces that are not
+bound to a specific zone. Changing it takes effect immediately and is
+also saved permanently.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><guilabel>Log denied packets</guilabel></term>
+<listitem><para>
+Whether packets rejected or dropped by the firewall are written to the
+kernel log: <guilabel>Off</guilabel>, <guilabel>All</guilabel>, or only
+<guilabel>Unicast</guilabel>, <guilabel>Broadcast</guilabel> or
+<guilabel>Multicast</guilabel> packets.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><guilabel>Panic mode</guilabel></term>
+<listitem><para>
+Blocks <emphasis>all</emphasis> incoming and outgoing network traffic
+and terminates active connections. Use it if you think your computer
+is under attack. You are asked to confirm before it is enabled.
+</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><guilabel>Active Zones</guilabel></term>
+<listitem><para>
+The zones that currently have interfaces or source addresses bound to
+them.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</sect1>
+
+<sect1 id="zones-page">
+<title>The Zones Page</title>
+
+<para>
+A zone describes how much you trust the network a connection is
+attached to. &firewalld; comes with predefined zones, for example
+<literal>public</literal> for untrusted networks, <literal>home</literal>
+and <literal>work</literal> for networks you mostly trust,
+<literal>trusted</literal> which accepts everything, and
+<literal>drop</literal> and <literal>block</literal> which reject all incoming
+connections.
+</para>
+
+<para>
+Select a zone in the list on the left; the default zone is marked with
+a star. The right side shows the zone's description, its
+<guilabel>Target</guilabel> and several tabs.
+</para>
+
+<para>
+The <guilabel>Target</guilabel> decides what happens to packets that
+do not match any rule: <guilabel>Default</guilabel> rejects them but allows
+ICMP, <guilabel>ACCEPT</guilabel> accepts them, <guilabel>DROP</guilabel>
+drops them silently and <guilabel>REJECT</guilabel> rejects them. The
+target can only be changed in the permanent configuration.
+</para>
+
+<sect2 id="zone-services">
+<title>Services</title>
+<para>
+A service is a named set of ports and protocols, for example
+<literal>ssh</literal> (port 22/tcp) or <literal>samba</literal>. Check a
+service to allow incoming connections to it in the selected zone, and
+uncheck it to block them again. The <guilabel>Ports</guilabel> column
+shows what the service opens.
+</para>
+<screenshot>
+<screeninfo>Services allowed in the public zone</screeninfo>
+<mediaobject>
+<imageobject><imagedata fileref="zones-services.png" format="PNG"/></imageobject>
+<textobject><phrase>Services allowed in the public zone</phrase></textobject>
+</mediaobject>
+</screenshot>
+</sect2>
+
+<sect2 id="zone-ports">
+<title>Ports</title>
+<para>
+Opens additional ports that are not covered by a service. Click
+<guibutton>Add...</guibutton>, enter a port number (for example
+<userinput>8080</userinput>) or a range (for example
+<userinput>6000-6010</userinput>) and choose the protocol
+(<literal>tcp</literal>, <literal>udp</literal>, <literal>sctp</literal> or
+<literal>dccp</literal>). To close a port, select it and click
+<guibutton>Remove</guibutton>.
+</para>
+<screenshot>
+<screeninfo>Opening a port</screeninfo>
+<mediaobject>
+<imageobject><imagedata fileref="add-port-dialog.png" format="PNG"/></imageobject>
+<textobject><phrase>Opening a port</phrase></textobject>
+</mediaobject>
+</screenshot>
+</sect2>
+
+<sect2 id="zone-masquerading">
+<title>Masquerading</title>
+<para>
+Masquerading is IPv4 network address translation. Enable it in the zone
+facing the Internet to let other machines use this computer as a
+router. It is also needed for port forwarding to other hosts.
+</para>
+</sect2>
+
+<sect2 id="zone-forwarding">
+<title>Port Forwarding</title>
+<para>
+Forwards connections that arrive at a local port to another port on
+this computer, or to a port on another host. Click
+<guibutton>Add...</guibutton> and enter the source port, the protocol, and the
+destination port and/or address.
+</para>
+<screenshot>
+<screeninfo>Port forwarding in the external zone</screeninfo>
+<mediaobject>
+<imageobject><imagedata fileref="zones-port-forwarding.png" format="PNG"/></imageobject>
+<textobject><phrase>Port forwarding in the external zone</phrase></textobject>
+</mediaobject>
+</screenshot>
+</sect2>
+
+<sect2 id="zone-rich-rules">
+<title>Rich Rules</title>
+<para>
+Rich rules express things the other tabs cannot, such as allowing a
+service only from certain addresses, logging, or rate limiting. They
+use the &firewalld; rich language described in
+<citerefentry><refentrytitle>firewalld.richlanguage</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+The <guibutton>Add...</guibutton> dialog contains several examples to start
+from, for example:
+</para>
+<programlisting>rule family="ipv4" source address="192.168.1.0/24" service name="ssh" accept</programlisting>
+<screenshot>
+<screeninfo>Adding a rich rule</screeninfo>
+<mediaobject>
+<imageobject><imagedata fileref="rich-rule-dialog.png" format="PNG"/></imageobject>
+<textobject><phrase>Adding a rich rule</phrase></textobject>
+</mediaobject>
+</screenshot>
+</sect2>
+
+<sect2 id="zone-interfaces">
+<title>Interfaces and Sources</title>
+<para>
+The <guilabel>Interfaces</guilabel> tab lists the network interfaces bound
+to the zone, and the <guilabel>Sources</guilabel> tab lists source addresses
+whose traffic is handled by the zone. A source can be an IP address, a
+network in CIDR notation (for example <userinput>10.8.0.0/24</userinput>), a
+MAC address, or an ipset (<userinput>ipset:name</userinput>).
+</para>
+<note><para>
+If an interface is managed by <application>NetworkManager</application>,
+NetworkManager sets its zone from the connection settings, which can
+override what you configure here.
+</para></note>
+</sect2>
+</sect1>
+
+<sect1 id="services-page">
+<title>The Services Page</title>
+<para>
+The <guilabel>Services</guilabel> page lists every service definition known to
+&firewalld;. Type in the <guilabel>Search</guilabel> field to filter the
+list. Selecting a service shows its description, ports, protocols, helper
+modules and destinations. The page is read-only; service definitions
+are files in <filename>/usr/lib/firewalld/services</filename> and
+<filename>/etc/firewalld/services</filename>.
+</para>
+<screenshot>
+<screeninfo>Browsing service definitions</screeninfo>
+<mediaobject>
+<imageobject><imagedata fileref="services.png" format="PNG"/></imageobject>
+<textobject><phrase>Browsing service definitions</phrase></textobject>
+</mediaobject>
+</screenshot>
+</sect1>
+
+<sect1 id="interfaces-page">
+<title>The Interfaces Page</title>
+<para>
+The <guilabel>Interfaces</guilabel> page shows every network interface of
+the computer and the zone that handles its traffic. Interfaces without
+an explicit zone use the default zone. Select an interface and click
+<guibutton>Change Zone...</guibutton> (or double-click it) to move it to
+another zone, or choose <guilabel>(default zone)</guilabel> to remove the
+explicit binding.
+</para>
+<screenshot>
+<screeninfo>Network interfaces and their zones</screeninfo>
+<mediaobject>
+<imageobject><imagedata fileref="interfaces.png" format="PNG"/></imageobject>
+<textobject><phrase>Network interfaces and their zones</phrase></textobject>
+</mediaobject>
+</screenshot>
+</sect1>
+
+<sect1 id="tray">
+<title>The System Tray Icon</title>
+
+<para>
+<command>tde-firewalld-tray</command> puts a firewall icon into the system tray
+of the <application>Kicker</application> panel. Its tooltip shows the firewall
+state, the default zone and the active zones with their interfaces and
+sources. The icon is greyed out when &firewalld; is not running and shows a
+red stop sign while panic mode is on.
+</para>
+
+<screenshot>
+<screeninfo>The tray icon's tooltip</screeninfo>
+<mediaobject>
+<imageobject><imagedata fileref="tray-tooltip.png" format="PNG"/></imageobject>
+<textobject><phrase>The tray icon's tooltip</phrase></textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+Click the icon with the left mouse button to open the Firewall Manager. The
+right mouse button opens a menu with:
+</para>
+
+<variablelist>
+<varlistentry>
+<term><guimenuitem>Open Firewall Manager</guimenuitem></term>
+<listitem><para>Starts <command>tde-firewalld</command>.</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><guisubmenu>Default Zone</guisubmenu></term>
+<listitem><para>Lists all zones; the current default zone is checked. Choosing
+another zone makes it the default zone.</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><guimenuitem>Panic Mode</guimenuitem></term>
+<listitem><para>Turns panic mode on (after a confirmation) or off.</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><guimenuitem>Reload Firewall</guimenuitem></term>
+<listitem><para>Reloads the permanent configuration.</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><guimenuitem>Start Automatically at Login</guimenuitem></term>
+<listitem><para>Starts the tray icon with every TDE session.</para></listitem>
+</varlistentry>
+</variablelist>
+
+<screenshot>
+<screeninfo>The tray icon's menu</screeninfo>
+<mediaobject>
+<imageobject><imagedata fileref="tray-menu.png" format="PNG"/></imageobject>
+<textobject><phrase>The tray icon's menu</phrase></textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+The tray icon is <emphasis>not</emphasis> started automatically by default.
+Start it once from the TDE menu (<guimenuitem>Firewall Tray</guimenuitem> in the
+<guimenu>System</guimenu> section) or by running
+<userinput><command>tde-firewalld-tray</command></userinput>, then check
+<guimenuitem>Start Automatically at Login</guimenuitem> if you want it in every
+session. The setting is stored as <literal>Autostart</literal> in the
+<literal>[General]</literal> group of
+<filename>~/.trinity/share/config/tde-firewalld-trayrc</filename>.
+</para>
+
+<para>
+Just showing the icon never asks for a password: it only uses requests that
+&firewalld; allows for every user. Changing the default zone, panic mode or
+reloading asks for authentication like the Firewall Manager does.
+</para>
+</sect1>
+</chapter>
+
+<!-- ================================================================== -->
+
+<chapter id="commands">
+<title>Command Reference</title>
+
+<sect1 id="menus">
+<title>Menus of the Standalone Application</title>
+<variablelist>
+<varlistentry>
+<term><menuchoice><shortcut><keycap>F5</keycap></shortcut><guimenu>File</guimenu><guimenuitem>Refresh View</guimenuitem></menuchoice></term>
+<listitem><para>Reads the configuration from &firewalld; again.</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><menuchoice><guimenu>File</guimenu><guimenuitem>Reload Firewall</guimenuitem></menuchoice></term>
+<listitem><para>Same as the <guibutton>Reload Firewall</guibutton> button.</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><menuchoice><guimenu>File</guimenu><guimenuitem>Runtime to Permanent</guimenuitem></menuchoice></term>
+<listitem><para>Same as the <guibutton>Runtime to Permanent</guibutton> button.</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><menuchoice><shortcut><keycombo action="simul">&Ctrl;<keycap>Q</keycap></keycombo></shortcut><guimenu>File</guimenu><guimenuitem>Quit</guimenuitem></menuchoice></term>
+<listitem><para>Quits the application.</para></listitem>
+</varlistentry>
+</variablelist>
+<para>The <guimenu>Help</guimenu> menu is the standard TDE help menu.</para>
+</sect1>
+
+<sect1 id="command-line">
+<title>Command Line Options</title>
+<para>
+Besides the standard Trinity and TQt options, <command>tde-firewalld</command>
+accepts:
+</para>
+<variablelist>
+<varlistentry>
+<term><option>--permanent</option></term>
+<listitem><para>Start with the permanent configuration selected.</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><option>--page</option> <replaceable>page</replaceable></term>
+<listitem><para>Show the given page first: <literal>status</literal>,
+<literal>zones</literal>, <literal>services</literal> or <literal>interfaces</literal>.</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><option>--zone</option> <replaceable>zone</replaceable></term>
+<listitem><para>Select the given zone on the zones page.</para></listitem>
+</varlistentry>
+</variablelist>
+<para>
+See also the manual pages <citerefentry><refentrytitle>tde-firewalld</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+and <citerefentry><refentrytitle>tde-firewalld-tray</refentrytitle><manvolnum>1</manvolnum></citerefentry>.
+</para>
+</sect1>
+</chapter>
+
+<!-- ================================================================== -->
+
+<chapter id="troubleshooting">
+<title>Troubleshooting</title>
+
+<qandaset id="faqlist">
+<qandaentry>
+<question><para>The window says <quote>The firewalld service is not running</quote>.</para></question>
+<answer><para>
+Click <guibutton>Start firewalld</guibutton>, or run
+<userinput><command>sudo systemctl enable --now firewalld</command></userinput>.
+If it does not start, see <userinput><command>journalctl -u firewalld</command></userinput>.
+</para></answer>
+</qandaentry>
+
+<qandaentry>
+<question><para>Every change fails with <quote>Not authorized</quote>.</para></question>
+<answer><para>
+Make sure a &polkit; authentication agent is running
+(<userinput><command>pgrep -a polkit-agent</command></userinput>) and that your
+user is allowed to authenticate as an administrator, usually by being a
+member of the <systemitem class="groupname">sudo</systemitem> group.
+</para></answer>
+</qandaentry>
+
+<qandaentry>
+<question><para>My changes disappeared after a reboot.</para></question>
+<answer><para>
+You changed the runtime configuration. Click <guibutton>Runtime to
+Permanent</guibutton>, or make the change again with the
+<guilabel>Permanent</guilabel> configuration selected and reload the firewall.
+</para></answer>
+</qandaentry>
+
+<qandaentry>
+<question><para>Changes to the permanent configuration have no effect.</para></question>
+<answer><para>
+The permanent configuration only takes effect after
+<guibutton>Reload Firewall</guibutton>.
+</para></answer>
+</qandaentry>
+</qandaset>
+</chapter>
+
+<!-- ================================================================== -->
+
+<chapter id="credits">
+<title>Credits and License</title>
+
+<para>
+&tdefirewalld;
+</para>
+<para>
+Program copyright 2026 tde-firewalld developers.
+Project home page: <ulink url="https://github.com/Yjlion/tde-firewalld">https://github.com/Yjlion/tde-firewalld</ulink>
+</para>
+<para>
+&tdefirewalld; is a client of &firewalld;, developed by the firewalld
+project at <ulink url="https://firewalld.org">https://firewalld.org</ulink>.
+</para>
+
+<!-- TRANS:CREDIT_FOR_TRANSLATORS -->
+
+&underFDL;
+&underGPL;
+
+</chapter>
+
+&documentation.index;
+</book>

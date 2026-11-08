@@ -1,0 +1,141 @@
+.\" Manual page for tde-firewalld
+.\" Copyright (C) 2026 tde-firewalld developers
+.\" This page is distributed under the terms of the GNU GPL version 2 or later.
+.TH TDE\-FIREWALLD 1 "November 2026" "tde-firewalld 0.1.0" "Trinity Desktop Environment"
+.SH NAME
+tde\-firewalld \- firewalld manager for the Trinity Desktop Environment
+.SH SYNOPSIS
+.B tde\-firewalld
+.RB [ \-\-permanent ]
+.RB [ \-\-page
+.IR page ]
+.RB [ \-\-zone
+.IR zone ]
+.RI [ "generic TDE and TQt options" ]
+.br
+.B tdecmshell firewalld
+.SH DESCRIPTION
+.B tde\-firewalld
+is a graphical front end for
+.BR firewalld (1),
+the dynamic firewall daemon. It shows and changes the firewalld
+configuration through firewalld's D\-Bus interface on the system bus
+.RI ( org.fedoraproject.FirewallD1 ).
+.PP
+The same user interface is available as a Trinity Control Center module,
+found under
+.B Security & Privacy \(-> Firewall
+or started with
+.BR "tdecmshell firewalld" .
+.PP
+It can:
+.IP \(bu 2
+show the state and version of firewalld and the active zones;
+.IP \(bu 2
+change the default zone, panic mode and logging of denied packets;
+.IP \(bu 2
+allow services and open ports or port ranges in a zone;
+.IP \(bu 2
+enable masquerading and add port forwarding rules;
+.IP \(bu 2
+add and remove rich rules;
+.IP \(bu 2
+bind interfaces and source addresses to zones;
+.IP \(bu 2
+browse the service definitions known to firewalld;
+.IP \(bu 2
+edit either the runtime or the permanent configuration, reload the
+firewall, and copy the runtime configuration to the permanent one.
+.PP
+Changes are sent to firewalld immediately. Runtime changes are lost when
+firewalld is reloaded or the system is restarted; permanent changes are
+saved to
+.I /etc/firewalld
+and take effect after a reload.
+.SH OPTIONS
+.TP
+.B \-\-permanent
+Start with the permanent configuration selected instead of the runtime
+configuration.
+.TP
+.BI \-\-page " page"
+Page to show at start up: one of
+.BR status " (default), " zones ", " services " or " interfaces .
+.TP
+.BI \-\-zone " zone"
+Zone to select on the zones page.
+.TP
+.B \-\-help
+Show the list of options, including the generic TDE and TQt options such
+as
+.B \-\-caption
+and
+.BR \-\-display .
+.TP
+.B \-\-version
+Show version information.
+.SH AUTHENTICATION
+.B tde\-firewalld
+runs as an ordinary user and never needs to be started as root.
+firewalld checks every request with
+.BR polkit (8)
+using the actions
+.IR org.fedoraproject.FirewallD1.info ,
+.IR org.fedoraproject.FirewallD1.config.info ,
+.I org.fedoraproject.FirewallD1.config
+and
+.IR org.fedoraproject.FirewallD1.all .
+When authentication is required, the polkit authentication agent of the
+session,
+.BR polkit\-agent\-tde ,
+asks for an administrator password. Starting firewalld from the
+application uses the systemd action
+.IR org.freedesktop.systemd1.manage\-units .
+.PP
+If no polkit agent is running, a warning is shown and changes will fail
+with "Not authorized".
+.SH FILES
+.TP
+.I /opt/trinity/share/applications/tde/firewalld.desktop
+Trinity Control Center module description.
+.TP
+.I /opt/trinity/lib/trinity/kcm_firewalld.so
+The Control Center module.
+.TP
+.I /etc/firewalld/
+Permanent firewalld configuration (written by firewalld, not by this program).
+.TP
+.I /usr/share/polkit\-1/actions/org.fedoraproject.FirewallD1.policy
+Default polkit policy of firewalld.
+.SH EXIT STATUS
+.B tde\-firewalld
+exits with status 0 when it is closed normally.
+.SH EXAMPLES
+Open the permanent configuration of the
+.I public
+zone:
+.PP
+.RS
+.B tde\-firewalld \-\-permanent \-\-page zones \-\-zone public
+.RE
+.PP
+Open the Control Center module on its own:
+.PP
+.RS
+.B tdecmshell firewalld
+.RE
+.SH SEE ALSO
+.BR tde\-firewalld\-tray (1),
+.BR firewalld (1),
+.BR firewall\-cmd (1),
+.BR firewalld.zones (5),
+.BR firewalld.richlanguage (5),
+.BR polkit (8),
+.BR tdecmshell (1)
+.PP
+The full handbook is available in the TDE Help Center
+.RI ( help:/tde\-firewalld ).
+.SH BUGS
+Please report bugs at
+.UR https://github.com/Yjlion/tde-firewalld/issues
+.UE .

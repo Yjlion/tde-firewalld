@@ -1,0 +1,15 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Exec=tde-firewalld %i %m -caption "%c"
+Icon=tde-firewalld
+DocPath=tde-firewalld/index.html
+X-DocPath=tde-firewalld/index.html
+Terminal=false
+
+Name=Firewall Manager
+GenericName=Firewall Configuration
+Comment=Configure the firewalld firewall
+Keywords=firewall;firewalld;zone;port;service;security;network;
+
+Categories=Qt;TDE;System;Security;Network;
