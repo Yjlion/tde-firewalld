@@ -11,6 +11,7 @@
 
 #include "statuspage.h"
 #include "firewalldclient.h"
+#include "dialogs.h"
 
 #include <tqcheckbox.h>
 #include <tqgroupbox.h>
@@ -167,11 +168,7 @@ void StatusPage::slotPanicMode(bool on)
 	if (m_updating)
 		return;
 	if (on) {
-		int res = KMessageBox::warningContinueCancel(this,
-			i18n("Panic mode blocks <b>all</b> incoming and outgoing network traffic "
-			     "and terminates active connections.<br><br>Do you really want to enable it?"),
-			i18n("Enable Panic Mode"), KGuiItem(i18n("Enable Panic Mode"), "process-stop"));
-		if (res != KMessageBox::Continue) {
+		if (!confirmPanicMode(this)) {
 			m_updating = true;
 			m_panic->setChecked(false);
 			m_updating = false;

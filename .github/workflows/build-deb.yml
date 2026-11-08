@@ -72,7 +72,13 @@ jobs:
           test -f /opt/trinity/lib/trinity/kcm_firewalld.so
           test -f /opt/trinity/share/doc/tde/HTML/en/tde-firewalld/index.cache.bz2
           test -f /opt/trinity/share/man/man1/tde-firewalld.1
+          test -x /opt/trinity/bin/tde-firewalld-tray
+          test -f /opt/trinity/share/man/man1/tde-firewalld-tray.1
+          # the tray icon must not be started at login unless the user enables it
+          grep -qx 'X-TDE-autostart-condition=tde-firewalld-trayrc:General:Autostart:false' \
+            /opt/trinity/share/autostart/tde-firewalld-tray-autostart.desktop
           /opt/trinity/bin/tde-firewalld --version
+          /opt/trinity/bin/tde-firewalld-tray --version
 
       - name: Upload packages
         uses: actions/upload-artifact@v4

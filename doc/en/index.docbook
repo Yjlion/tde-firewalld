@@ -73,6 +73,7 @@ With &tdefirewalld; you can:
 <listitem><para>set up masquerading (NAT) and port forwarding;</para></listitem>
 <listitem><para>add and remove rich rules;</para></listitem>
 <listitem><para>bind network interfaces and source addresses to zones;</para></listitem>
+<listitem><para>keep an eye on the firewall with an optional system tray icon;</para></listitem>
 <listitem><para>browse the definitions of all known services;</para></listitem>
 <listitem><para>edit either the <emphasis>runtime</emphasis> or the <emphasis>permanent</emphasis> configuration.</para></listitem>
 </itemizedlist>
@@ -484,6 +485,80 @@ explicit binding.
 </mediaobject>
 </screenshot>
 </sect1>
+
+<sect1 id="tray">
+<title>The System Tray Icon</title>
+
+<para>
+<command>tde-firewalld-tray</command> puts a firewall icon into the system tray
+of the <application>Kicker</application> panel. Its tooltip shows the firewall
+state, the default zone and the active zones with their interfaces and
+sources. The icon is greyed out when &firewalld; is not running and shows a
+red stop sign while panic mode is on.
+</para>
+
+<screenshot>
+<screeninfo>The tray icon's tooltip</screeninfo>
+<mediaobject>
+<imageobject><imagedata fileref="tray-tooltip.png" format="PNG"/></imageobject>
+<textobject><phrase>The tray icon's tooltip</phrase></textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+Click the icon with the left mouse button to open the Firewall Manager. The
+right mouse button opens a menu with:
+</para>
+
+<variablelist>
+<varlistentry>
+<term><guimenuitem>Open Firewall Manager</guimenuitem></term>
+<listitem><para>Starts <command>tde-firewalld</command>.</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><guisubmenu>Default Zone</guisubmenu></term>
+<listitem><para>Lists all zones; the current default zone is checked. Choosing
+another zone makes it the default zone.</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><guimenuitem>Panic Mode</guimenuitem></term>
+<listitem><para>Turns panic mode on (after a confirmation) or off.</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><guimenuitem>Reload Firewall</guimenuitem></term>
+<listitem><para>Reloads the permanent configuration.</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><guimenuitem>Start Automatically at Login</guimenuitem></term>
+<listitem><para>Starts the tray icon with every TDE session.</para></listitem>
+</varlistentry>
+</variablelist>
+
+<screenshot>
+<screeninfo>The tray icon's menu</screeninfo>
+<mediaobject>
+<imageobject><imagedata fileref="tray-menu.png" format="PNG"/></imageobject>
+<textobject><phrase>The tray icon's menu</phrase></textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+The tray icon is <emphasis>not</emphasis> started automatically by default.
+Start it once from the TDE menu (<guimenuitem>Firewall Tray</guimenuitem> in the
+<guimenu>System</guimenu> section) or by running
+<userinput><command>tde-firewalld-tray</command></userinput>, then check
+<guimenuitem>Start Automatically at Login</guimenuitem> if you want it in every
+session. The setting is stored as <literal>Autostart</literal> in the
+<literal>[General]</literal> group of
+<filename>~/.trinity/share/config/tde-firewalld-trayrc</filename>.
+</para>
+
+<para>
+Just showing the icon never asks for a password: it only uses requests that
+&firewalld; allows for every user. Changing the default zone, panic mode or
+reloading asks for authentication like the Firewall Manager does.
+</para>
+</sect1>
 </chapter>
 
 <!-- ================================================================== -->
@@ -536,7 +611,8 @@ accepts:
 </varlistentry>
 </variablelist>
 <para>
-See also the manual page <citerefentry><refentrytitle>tde-firewalld</refentrytitle><manvolnum>1</manvolnum></citerefentry>.
+See also the manual pages <citerefentry><refentrytitle>tde-firewalld</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+and <citerefentry><refentrytitle>tde-firewalld-tray</refentrytitle><manvolnum>1</manvolnum></citerefentry>.
 </para>
 </sect1>
 </chapter>

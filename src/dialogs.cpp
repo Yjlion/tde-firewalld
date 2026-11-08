@@ -314,4 +314,15 @@ TQString ZoneChooserDialog::zone() const
 	return m_zones->currentText();
 }
 
+/* ---------------------------------------------------------------------- */
+
+bool confirmPanicMode(TQWidget *parent)
+{
+	int res = KMessageBox::warningContinueCancel(parent,
+		i18n("Panic mode blocks <b>all</b> incoming and outgoing network traffic "
+		     "and terminates active connections.<br><br>Do you really want to enable it?"),
+		i18n("Enable Panic Mode"), KGuiItem(i18n("Enable Panic Mode"), "process-stop"));
+	return res == KMessageBox::Continue;
+}
+
 #include "dialogs.moc"

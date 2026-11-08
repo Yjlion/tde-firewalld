@@ -62,6 +62,21 @@ tde_add_executable( tde-firewalld AUTOMOC
 )
 
 
+##### tde-firewalld-tray (system tray icon for kicker)
+
+tde_add_executable( tde-firewalld-tray AUTOMOC
+  SOURCES
+    traymain.cpp
+    firewalltray.cpp
+  LINK
+    firewallcommon-static
+    tdeio-shared
+    tdeui-shared
+    tdecore-shared
+  DESTINATION ${BIN_INSTALL_DIR}
+)
+
+
 ##### desktop files
 
 tde_create_translated_desktop(
@@ -72,4 +87,16 @@ tde_create_translated_desktop(
 tde_create_translated_desktop(
   SOURCE tde-firewalld.desktop
   DESTINATION ${XDG_APPS_INSTALL_DIR}
+)
+
+tde_create_translated_desktop(
+  SOURCE tde-firewalld-tray.desktop
+  DESTINATION ${XDG_APPS_INSTALL_DIR}
+)
+
+# not started at login unless the user enables it (see the
+# X-TDE-autostart-condition in the file)
+tde_create_translated_desktop(
+  SOURCE tde-firewalld-tray-autostart.desktop
+  DESTINATION ${AUTOSTART_INSTALL_DIR}
 )

@@ -9,6 +9,8 @@ It comes in two forms that share the same user interface:
   `tdecmshell firewalld`
 * a **standalone application**: `tde-firewalld`
 
+plus an optional **system tray icon** for kicker, `tde-firewalld-tray`.
+
 ![Zones page](screenshots/zones-services.png)
 
 ## Features
@@ -24,7 +26,11 @@ It comes in two forms that share the same user interface:
   *Reload Firewall* and *Runtime to Permanent* buttons
 * Updates live when the configuration is changed elsewhere (for example
   with `firewall-cmd`), using firewalld's D-Bus signals
-* A KHelpCenter handbook and a man page
+* **System tray icon** (`tde-firewalld-tray`): shows the firewall state,
+  default zone and active zones. Its menu changes the default zone, toggles
+  panic mode, reloads the firewall and opens the manager. It is **not started
+  at login by default**; enable *Start Automatically at Login* in its menu
+* A KHelpCenter handbook and man pages
 
 ## How it works
 
@@ -83,7 +89,7 @@ dpkg-buildpackage -us -uc -b
 
 * Handbook: open *Help → Firewall Manager Handbook*, or `help:/tde-firewalld`
   in KHelpCenter (source: [`doc/en/index.docbook`](doc/en/index.docbook))
-* Manual page: `man tde-firewalld` (source: [`doc/man/tde-firewalld.1`](doc/man/tde-firewalld.1))
+* Manual pages: `man tde-firewalld`, `man tde-firewalld-tray` (sources in [`doc/man/`](doc/man/))
 
 ## Screenshots
 
@@ -94,6 +100,7 @@ dpkg-buildpackage -us -uc -b
 | ![Services](screenshots/services.png) | ![Interfaces](screenshots/interfaces.png) |
 | ![Trinity Control Center](screenshots/kcontrol.png) | ![Handbook in KHelpCenter](screenshots/handbook-khelpcenter.png) |
 | ![Add port](screenshots/add-port-dialog.png) | ![Add rich rule](screenshots/rich-rule-dialog.png) |
+| ![Tray menu](screenshots/tray-menu.png) | ![Tray tooltip](screenshots/tray-tooltip.png) |
 
 The screenshots were taken with `tools/take-screenshots.sh` against a real
 firewalld 2.3 in a Debian trixie container.

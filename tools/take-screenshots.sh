@@ -53,3 +53,13 @@ pkill -x kcontrol; sleep 1
 su - tester -c "export DISPLAY=:1 PATH=/opt/trinity/bin:\$PATH; rm -f ~/.trinity/share/config/tde-firewalldrc; (tde-firewalld --page status >/dev/null 2>&1 &); sleep 7"
 shot auth-required "Firewall Manager"
 pkill -x tde-firewalld
+
+# system tray icon in kicker
+pgrep -x kicker >/dev/null || (kicker >/dev/null 2>&1 &); sleep 8
+pkill -x tde-firewalld-t; sleep 1; (tde-firewalld-tray >/dev/null 2>&1 &); sleep 5
+xdotool mousemove 1140 880; sleep 0.3; xdotool mousemove 1144 884; sleep 3
+import -window root -crop 330x170+950+735 +repage "$OUT/tray-tooltip.png" && echo "saved tray-tooltip"
+xdotool mousemove 1144 884 click 3; sleep 1.5; xdotool mousemove 880 763; sleep 1.5
+import -window root -crop 760x420+520+480 +repage "$OUT/tray-menu.png" && echo "saved tray-menu"
+xdotool key Escape Escape
+pkill -x tde-firewalld-t

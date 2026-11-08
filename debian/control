@@ -28,7 +28,9 @@ Recommends: kcontrol-trinity,
 Description: firewalld manager for the Trinity Desktop Environment [Trinity]
  tde-firewalld is a graphical front end for firewalld, the dynamic firewall
  daemon. It is available both as a Trinity Control Center module
- (Security & Privacy > Firewall) and as a standalone application.
+ (Security & Privacy > Firewall) and as a standalone application, with an
+ optional system tray icon for the Kicker panel that is not started at login
+ unless the user enables it.
  .
  It shows the firewall state and active zones, and lets you change the
  default zone, allow services and ports, configure masquerading, port

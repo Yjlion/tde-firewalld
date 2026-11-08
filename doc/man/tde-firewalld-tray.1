@@ -1,0 +1,61 @@
+.\" Manual page for tde-firewalld-tray
+.\" Copyright (C) 2026 tde-firewalld developers
+.\" This page is distributed under the terms of the GNU GPL version 2 or later.
+.TH TDE\-FIREWALLD\-TRAY 1 "November 2026" "tde-firewalld 0.1.0" "Trinity Desktop Environment"
+.SH NAME
+tde\-firewalld\-tray \- system tray icon for the firewalld firewall
+.SH SYNOPSIS
+.B tde\-firewalld\-tray
+.RI [ "generic TDE and TQt options" ]
+.SH DESCRIPTION
+.B tde\-firewalld\-tray
+shows the state of
+.BR firewalld (1)
+as an icon in the system tray of the Trinity panel (kicker). The tooltip
+shows the default zone and the active zones. The icon is greyed out when
+firewalld is not running and shows a red stop sign while panic mode is on.
+.PP
+A left click opens the Firewall Manager,
+.BR tde\-firewalld (1).
+The context menu changes the default zone, turns panic mode on or off,
+reloads the firewall, and enables or disables starting the icon at login.
+.PP
+Only one instance runs per session; starting it again does nothing.
+.SH AUTOSTART
+The icon is
+.B not
+started automatically by default. TDE starts it at login only when
+.B Start Automatically at Login
+is checked in its menu, which sets
+.B Autostart=true
+in the
+.B [General]
+group of
+.IR tde\-firewalld\-trayrc .
+.SH AUTHENTICATION
+Showing the icon only uses firewalld requests covered by the
+.I org.fedoraproject.FirewallD1.info
+polkit action, which every user may use, so it never asks for a password
+on its own. Changing the default zone, panic mode or reloading the firewall
+asks for authentication through the session's polkit agent
+.RB ( polkit\-agent\-tde ).
+.SH FILES
+.TP
+.I ~/.trinity/share/config/tde\-firewalld\-trayrc
+Per-user settings ([General] Autostart).
+.TP
+.I /opt/trinity/share/autostart/tde\-firewalld\-tray\-autostart.desktop
+Session autostart entry, guarded by
+.BR X\-TDE\-autostart\-condition=tde\-firewalld\-trayrc:General:Autostart:false .
+.SH SEE ALSO
+.BR tde\-firewalld (1),
+.BR firewalld (1),
+.BR firewall\-cmd (1),
+.BR polkit (8)
+.PP
+The handbook is available in the TDE Help Center
+.RI ( help:/tde\-firewalld/tray.html ).
+.SH BUGS
+Please report bugs at
+.UR https://github.com/Yjlion/tde-firewalld/issues
+.UE .

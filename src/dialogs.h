@@ -106,4 +106,7 @@ private:
 	bool m_allowDefault;
 };
 
+/** Ask the user to confirm enabling panic mode. Returns true to continue. */
+bool confirmPanicMode(TQWidget *parent);
+
 #endif
