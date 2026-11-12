@@ -70,6 +70,7 @@ jobs:
           apt-get install -y ./artifacts/tde-firewalld-trinity_*.deb
           test -x /opt/trinity/bin/tde-firewalld
           test -f /opt/trinity/lib/trinity/kcm_firewalld.so
+          test -f /opt/trinity/lib/trinity/kcm_firewalld.la
           test -f /opt/trinity/share/doc/tde/HTML/en/tde-firewalld/index.cache.bz2
           test -f /opt/trinity/share/man/man1/tde-firewalld.1
           test -x /opt/trinity/bin/tde-firewalld-tray
